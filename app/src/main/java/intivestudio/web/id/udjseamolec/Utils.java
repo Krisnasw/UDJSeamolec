@@ -3,10 +3,10 @@ package intivestudio.web.id.udjseamolec;
 /**
  * Created by Krisnasw on 5/16/2016.
  */
+import android.util.Log;
+
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import android.util.Log;
 
 public class Utils {
 

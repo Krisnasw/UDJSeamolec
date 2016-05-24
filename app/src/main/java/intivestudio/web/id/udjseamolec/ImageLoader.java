@@ -3,6 +3,12 @@ package intivestudio.web.id.udjseamolec;
 /**
  * Created by Krisnasw on 5/16/2016.
  */
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.widget.ImageView;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -16,11 +22,6 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.widget.ImageView;
 
 public class ImageLoader {
 
@@ -34,7 +35,7 @@ public class ImageLoader {
         executorService=Executors.newFixedThreadPool(5);
     }
 
-    final int stub_id=R.mipmap.ic_launcher;
+    final int stub_id= R.mipmap.ic_launcher;
     public void DisplayImage(String httpPost, ImageView imageView)
     {
         imageViews.put(imageView, httpPost);

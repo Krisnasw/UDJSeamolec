@@ -19,6 +19,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request.Method;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -28,18 +33,14 @@ import org.apache.http.params.BasicHttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
-import com.android.volley.Request.Method;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class QuizActivity extends AppCompatActivity {
@@ -66,8 +67,8 @@ public class QuizActivity extends AppCompatActivity {
     private SQLiteFunction func;
     private SQLiteHandler db;
 
-    private static String url = "http://192.168.50.78/droid/images/";
-    private static final String TAG_DAFTAR = "daftar_soal";
+    private static String url = "http://192.168.137.108/droid/images/";
+    private static final String TAG_DAFTAR = "quiz_questions";
     private static final String TAG_ID = "id";
     private static final String TAG_SOAL = "question";
     private static final String TAG_A = "pila";
@@ -136,10 +137,9 @@ public class QuizActivity extends AppCompatActivity {
                                     HashMap<String, String> user = db.getUserDetails();
 
                                     String name = user.get("name");
-                                    String ids = user.get("uid");
                                     String Score = ScoreString +"";
 
-                                    InputNilai(name, Score, ids);
+                                    InputNilai(name, Score);
                                 }
                             });
 
@@ -157,7 +157,6 @@ public class QuizActivity extends AppCompatActivity {
                     firstQuestion = parsedObject.get(currentQuizQuestion);
                     quizQuestion.setText(firstQuestion.getQuestion());
                     imageLoader.DisplayImage(url+firstQuestion.getImage(), imageViews);
-//                    String[] possibleAnswers = firstQuestion.getAnswers().split(",");
                     String pila = firstQuestion.getPila();
                     String pilb = firstQuestion.getPilb();
                     String pilc = firstQuestion.getPilc();
@@ -168,7 +167,46 @@ public class QuizActivity extends AppCompatActivity {
                     optionThree.setText(pilc);
                     optionFour.setText(pild);
 
+                    previousButton.setVisibility(Button.VISIBLE);
+                    int radioSelected = radioGroup.getCheckedRadioButtonId();
+                    int userSelection = getSelectedAnswer(radioSelected);
+                    correctAnswerForQuestion = firstQuestion.getCorrectAnswer();
+
+
+                    if (userSelection == correctAnswerForQuestion) {
+// correct answer
+                        if (correctAnswerForQuestion == 1) {
+                            optionOne.setTextColor(getResources().getColor(R.color.colorAccent));
+
+                        } else if (correctAnswerForQuestion == 2) {
+                            optionTwo.setTextColor(getResources().getColor(R.color.colorAccent));
+                        } else if (correctAnswerForQuestion == 3) {
+                            optionThree.setTextColor(getResources().getColor(R.color.colorAccent));
+                        } else if (correctAnswerForQuestion == 4) {
+                            optionFour.setTextColor(getResources().getColor(R.color.colorAccent));
+                        }
+                        currentQuizQuestion++;
+
+                    } else {
+// failed question
+                        result.setTextColor(Color.parseColor("#FF0000"));
+                        if (correctAnswerForQuestion == 1) {
+                            optionOne.setTextColor(getResources().getColor(R.color.colorPrimary));
+                        } else if (correctAnswerForQuestion == 2) {
+                            optionTwo.setTextColor(getResources().getColor(R.color.colorPrimary));
+                        } else if (correctAnswerForQuestion == 3) {
+                            optionThree.setTextColor(getResources().getColor(R.color.colorPrimary));
+                        } else if (correctAnswerForQuestion == 4) {
+                            optionFour.setTextColor(getResources().getColor(R.color.colorPrimary));
+                        }
+
+
+                        currentQuizQuestion++;
+                        return;
+                    }
+
                 }
+
             }
         });
 
@@ -194,9 +232,8 @@ public class QuizActivity extends AppCompatActivity {
                     } else if (correctAnswerForQuestion == 4) {
                         optionFour.setTextColor(getResources().getColor(R.color.colorAccent));
                     }
-                    score = score + 1;
 
-                    currentQuizQuestion++;
+                    currentQuizQuestion--;
 
                 } else {
 // failed question
@@ -211,8 +248,7 @@ public class QuizActivity extends AppCompatActivity {
                         optionFour.setTextColor(getResources().getColor(R.color.colorPrimary));
                     }
 
-
-                    currentQuizQuestion++;
+                    currentQuizQuestion--;
                     return;
                 }
 
@@ -226,7 +262,7 @@ public class QuizActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient(new BasicHttpParams());
-            HttpPost httpPost = new HttpPost("http://192.168.50.78/droid/quiz.php");
+            HttpPost httpPost = new HttpPost("http://192.168.137.108/droid/quiz.php");
             String jsonResult = "";
             try {
                 HttpResponse response = httpClient.execute(httpPost);
@@ -261,10 +297,8 @@ public class QuizActivity extends AppCompatActivity {
             quizCount = parsedObject.size();
             firstQuestion = parsedObject.get(0);
             quizQuestion.setText(firstQuestion.getQuestion());
-//            imageViews.set();
             imageLoader.DisplayImage(url+firstQuestion.getImage(), imageViews);
             System.out.println("Gambar gblk : "+url+firstQuestion.getImage());
-//            String[] possibleAnswers = firstQuestion.getAnswers().split(",");
             String pila = firstQuestion.getPila();
             String pilb = firstQuestion.getPilb();
             String pilc = firstQuestion.getPilc();
@@ -353,7 +387,7 @@ public class QuizActivity extends AppCompatActivity {
         radioGroup.clearCheck();
     }
 
-    private void InputNilai(final String name,final String Score, final String ids) {
+    private void InputNilai(final String name,final String Score) {
 
         String tag_string_req = "req_input";
 
@@ -374,12 +408,11 @@ public class QuizActivity extends AppCompatActivity {
                         String uid = jObj.getString("id_users");
 
                         JSONObject user = jObj.getJSONObject("hasil");
-                        String ids = user.getString("ids");
                         String name = user.getString("nama");
                         String nilai = user.getString("nilai");
 
                         // Inserting row in users table
-                        func.addNilai(ids, name, nilai);
+                        func.addNilai(name, nilai);
 
                         // Launch main activity
                         Intent intent = new Intent(QuizActivity.this,
@@ -395,7 +428,7 @@ public class QuizActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     // JSON error
                     e.printStackTrace();
-//                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -413,7 +446,6 @@ public class QuizActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 // Posting parameters to login url
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("id_users", ids);
                 params.put("nama", name);
                 params.put("nilai", Score);
 

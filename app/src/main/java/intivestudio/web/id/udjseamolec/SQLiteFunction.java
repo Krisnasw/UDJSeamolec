@@ -60,13 +60,12 @@ public class SQLiteFunction extends SQLiteOpenHelper {
     /**
      * Storing user details in database
      * */
-    public void addNilai(String id_users, String nama, String nilai) {
+    public void addNilai(String nama, String nilai) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_IDS, id_users); // Name
-        values.put(KEY_NAMA, nama); // Email
-        values.put(KEY_NILAI, nilai); // Email
+        values.put(KEY_NAMA, nama); // Nama
+        values.put(KEY_NILAI, nilai); // Nilai
 
         // Inserting Row
         long id = db.insert(TABLE_HASIL, null, values);

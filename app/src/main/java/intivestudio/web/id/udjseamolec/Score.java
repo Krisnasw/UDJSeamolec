@@ -36,8 +36,8 @@ public class Score extends AppCompatActivity {
     CustomListAdapter adapter;
     ProgressDialog mProgressDialog;
     ArrayList<HashMap<String, String>> arraylist;
-    static String nama = "nama";
-    static String nilai = "nilai";
+    public static String nama = "nama";
+    public static String nilai = "nilai";
     static String hasil = "hasil";
     Toolbar toolbar;
     private SQLiteHandler db;
@@ -109,10 +109,10 @@ public class Score extends AppCompatActivity {
             HashMap<String, String> user = db.getUserDetails();
 
             String name = user.get("name");
-            System.out.println("Jeneng"+name);
+            System.out.println("Jeneng : "+name);
 
             // url where the data will be posted
-            String postReceiverUrl = "http://192.168.50.78/droid/score.php";
+            String postReceiverUrl = "http://192.168.137.108/droid/score.php";
             Log.v(TAG, "postURL: " + postReceiverUrl);
 
             // HttpClient
@@ -169,11 +169,11 @@ public class Score extends AppCompatActivity {
             arraylist = new ArrayList<HashMap<String, String>>();
             // Retrieve JSON Objects from the given URL address
             jsonobject = JSONFunctions
-                    .getJSONfromURL("http://192.168.50.78/droid/score.php");
+                    .getJSONfromURL("http://192.168.137.108/droid/score.php");
 
             try {
                 // Locate the array name in JSON
-                jsonarray = jsonobject.getJSONArray(hasil);
+                jsonarray = jsonobject.getJSONArray("hasil");
                  System.out.println("Hasil : "+!jsonobject.isNull(hasil));
                     for (int i = 0; i < jsonarray.length(); i++) {
                         HashMap<String, String> map = new HashMap<String, String>();

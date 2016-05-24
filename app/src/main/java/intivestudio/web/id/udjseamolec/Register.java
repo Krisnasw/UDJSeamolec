@@ -1,6 +1,5 @@
 package intivestudio.web.id.udjseamolec;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +29,6 @@ public class Register extends AppCompatActivity {
     private TextView btnLinkToLogin;
     private EditText inputFullName;
     private EditText inputEmail;
-    private EditText inputKelas;
     private EditText inputPassword;
     private EditText inputKel;
     private ProgressDialog pDialog;
@@ -48,7 +45,6 @@ public class Register extends AppCompatActivity {
         inputFullName = (EditText) findViewById(R.id.reg_fullname);
         inputEmail = (EditText) findViewById(R.id.reg_uname);
         inputPassword = (EditText) findViewById(R.id.reg_password);
-        inputKelas = (EditText) findViewById(R.id.reg_kelas);
         inputKel = (EditText) findViewById(R.id.reg_kel);
         btnRegister = (Button) findViewById(R.id.btnRegister);
         btnLinkToLogin = (TextView) findViewById(R.id.link_to_login);
@@ -82,11 +78,10 @@ public class Register extends AppCompatActivity {
                 String name = inputFullName.getText().toString().trim();
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
-                String kelas = inputKelas.getText().toString().trim();
-                String kel = inputKel.getText().toString().trim();
+                String kelas = inputKel.getText().toString().trim();
 
-                if (!name.isEmpty() && !email.isEmpty() && !password.isEmpty() && !kelas.isEmpty() && !kel.isEmpty()) {
-                    registerUser(name, email, password);
+                if (!name.isEmpty() && !email.isEmpty() && !password.isEmpty() && !kelas.isEmpty()) {
+                    registerUser(name, email, password, kelas);
                 } else {
                     Toast.makeText(getApplicationContext(),
                             "Please enter your details!", Toast.LENGTH_LONG)
@@ -113,7 +108,7 @@ public class Register extends AppCompatActivity {
      * email, password) to register url
      * */
     private void registerUser(final String name, final String email,
-                              final String password) {
+                              final String password, final String kelas) {
         // Tag used to cancel the request
         String tag_string_req = "req_register";
 
@@ -139,12 +134,11 @@ public class Register extends AppCompatActivity {
                         JSONObject user = jObj.getJSONObject("user");
                         String name = user.getString("name");
                         String email = user.getString("email");
-//                        String sekolah = user.getString("sekolah");
-//                        String kelas = user.getString("kelas");
+                        String kelas = user.getString("kelas");
                         String created_at = user.getString("created_at");
 
                         // Inserting row in users table
-                        db.addUser(name, email, uid, created_at);
+                        db.addUser(name, email, uid, kelas, created_at);
 
                         Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
 
@@ -185,6 +179,7 @@ public class Register extends AppCompatActivity {
                 params.put("name", name);
                 params.put("email", email);
                 params.put("password", password);
+                params.put("kelas", kelas);
 
                 return params;
             }

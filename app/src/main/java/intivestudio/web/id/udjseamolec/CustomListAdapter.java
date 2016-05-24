@@ -3,17 +3,16 @@ package intivestudio.web.id.udjseamolec;
 /**
  * Created by Krisnasw on 5/17/2016.
  */
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CustomListAdapter extends BaseAdapter {
 
@@ -64,22 +63,6 @@ public class CustomListAdapter extends BaseAdapter {
         rank.setText(resultp.get(Score.nama));
         country.setText(resultp.get(Score.nilai));
         // Capture ListView item click
-//        itemView.setOnClickListener(new OnClickListener() {
-//
-//            @Override
-//            public void onClick(View arg0) {
-//                // Get the position
-//                resultp = data.get(position);
-//                Intent intent = new Intent(context, Items.class);
-//                // Pass all data rank
-//                intent.putExtra("nama", resultp.get(Score.nama));
-//                // Pass all data country
-//                intent.putExtra("nilai", resultp.get(Score.nilai));
-//                // Start SingleItemView Class
-//                context.startActivity(intent);
-//
-//            }
-//        });
         return itemView;
     }
 }
