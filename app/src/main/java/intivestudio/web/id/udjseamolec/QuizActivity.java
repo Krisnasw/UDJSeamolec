@@ -67,7 +67,7 @@ public class QuizActivity extends AppCompatActivity {
     private SQLiteFunction func;
     private SQLiteHandler db;
 
-    private static String url = "http://192.168.137.108/droid/images/";
+    private static String url = "http://192.168.137.68/droid/images/";
     private static final String TAG_DAFTAR = "quiz_questions";
     private static final String TAG_ID = "id";
     private static final String TAG_SOAL = "question";
@@ -262,17 +262,17 @@ public class QuizActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient(new BasicHttpParams());
-            HttpPost httpPost = new HttpPost("http://192.168.137.108/droid/quiz.php");
+            HttpPost httpPost = new HttpPost("http://192.168.137.68/droid/quiz.php");
             String jsonResult = "";
             try {
                 HttpResponse response = httpClient.execute(httpPost);
                 jsonResult = inputStreamToString(response.getEntity().getContent()).toString();
                 System.out.println("Returned Json object " + jsonResult.toString());
             } catch (ClientProtocolException e) {
-// TODO Auto-generated catch block
+            // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (IOException e) {
-// TODO Auto-generated catch block
+            // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return jsonResult;
@@ -280,7 +280,7 @@ public class QuizActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-// TODO Auto-generated method stub
+            // TODO Auto-generated method stub
             super.onPreExecute();
             progressDialog = ProgressDialog.show(QuizActivity.this, "Loading Quiz", "Please Wait....", true);
         }
@@ -298,7 +298,7 @@ public class QuizActivity extends AppCompatActivity {
             firstQuestion = parsedObject.get(0);
             quizQuestion.setText(firstQuestion.getQuestion());
             imageLoader.DisplayImage(url+firstQuestion.getImage(), imageViews);
-            System.out.println("Gambar gblk : "+url+firstQuestion.getImage());
+
             String pila = firstQuestion.getPila();
             String pilb = firstQuestion.getPilb();
             String pilc = firstQuestion.getPilc();

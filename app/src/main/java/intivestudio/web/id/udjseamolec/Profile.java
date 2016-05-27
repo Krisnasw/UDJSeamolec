@@ -56,7 +56,7 @@ public class Profile extends AppCompatActivity {
 
         // Displaying the user details on the screen
         txtName.setText("Nama Lengkap : " +name);
-        txtEmail.setText("Kelas : " +email);
+        txtEmail.setText("Email : " +email);
 
         // Logout button click event
         btnLogout.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +70,7 @@ public class Profile extends AppCompatActivity {
         btnSoal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent q = new Intent(Profile.this, QuizActivity.class);
+                Intent q = new Intent(Profile.this, Mapel.class);
                 startActivity(q);
             }
         });

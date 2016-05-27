@@ -26,6 +26,7 @@
         <activity android:name=".Profile"/>
         <activity android:name=".QuizActivity"/>
         <activity android:name=".Score"/>
+        <activity android:name=".Mapel"/>
     </application>
 
 </manifest>
