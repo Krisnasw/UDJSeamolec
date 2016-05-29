@@ -55,6 +55,8 @@ public class QuizActivity extends ActionBarActivity {
     private int quizCount;
     private int ScoreString;
     String Score = ScoreString + "";
+    private int Nyekor;
+    String Sukor = Nyekor + "";
 
     private SessionManager session;
     private SQLiteFunction func;
@@ -114,14 +116,11 @@ public class QuizActivity extends ActionBarActivity {
             public void onClick(View v) {
 
                 int radioSelected = radioGroup.getCheckedRadioButtonId();
-
                 int userSelection = getSelectedAnswer(radioSelected);
-
                 int correctAnswerForQuestion = firstQuestion.getCorrectAnswer();
-
                 if(userSelection == correctAnswerForQuestion){
                 // correct answer
-                    ScoreString = correctAnswerForQuestion * 10;
+                    ScoreString = correctAnswerForQuestion + 10;
                     Toast.makeText(QuizActivity.this, "Jawaban Anda Benar", Toast.LENGTH_LONG).show();
 
                     currentQuizQuestion++;
@@ -132,8 +131,7 @@ public class QuizActivity extends ActionBarActivity {
                                 .create();
                         tampilKotakAlert.setTitle("Hasil Ujian");
                         tampilKotakAlert.setIcon(R.mipmap.ic_launcher);
-                        tampilKotakAlert.setMessage("Nilai : " + ScoreString);
-                        ScoreString = correctAnswerForQuestion * 10;
+                        tampilKotakAlert.setMessage("Nilai : " + (ScoreString + Nyekor));
 
                         tampilKotakAlert.setButton(AlertDialog.BUTTON_NEGATIVE, "Keluar",
                                 new DialogInterface.OnClickListener() {
@@ -181,9 +179,60 @@ public class QuizActivity extends ActionBarActivity {
 
                 else{
 
-// failed question
-
+                    // failed question
+                    Nyekor = correctAnswerForQuestion + 0;
+                    currentQuizQuestion++;
                     Toast.makeText(QuizActivity.this, "You chose the wrong answer", Toast.LENGTH_LONG).show();
+
+                    if(currentQuizQuestion >= quizCount){
+                        AlertDialog tampilKotakAlert;
+                        tampilKotakAlert = new AlertDialog.Builder(QuizActivity.this)
+                                .create();
+                        tampilKotakAlert.setTitle("Hasil Ujian");
+                        tampilKotakAlert.setIcon(R.mipmap.ic_launcher);
+                        tampilKotakAlert.setMessage("Nilai : " + (ScoreString + Nyekor));
+
+                        tampilKotakAlert.setButton(AlertDialog.BUTTON_NEGATIVE, "Keluar",
+                                new DialogInterface.OnClickListener() {
+
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent q = new Intent(QuizActivity.this, Profile.class);
+                                        finish();
+                                        startActivity(q);
+                                    }
+                                });
+
+                        tampilKotakAlert.setButton(AlertDialog.BUTTON_POSITIVE, "Submit",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        HashMap<String, String> user = db.getUserDetails();
+
+                                        String name = user.get("name");
+                                        String Score = ScoreString +"";
+
+                                        InputNilai(name, Score);
+                                    }
+                                });
+
+                        tampilKotakAlert.show();
+                        Toast.makeText(QuizActivity.this, "End of the Quiz Questions", Toast.LENGTH_LONG).show();
+
+                        return;
+
+                    }
+
+                    else{
+
+                        firstQuestion = parsedObject.get(currentQuizQuestion);
+                        quizQuestion.setText(firstQuestion.getQuestion());
+                        uncheckedRadioButton();
+                        optionOne.setText(firstQuestion.getPila());
+                        optionTwo.setText(firstQuestion.getPilb());
+                        optionThree.setText(firstQuestion.getPilc());
+                        optionFour.setText(firstQuestion.getPild());
+
+                    }
 
                     return;
 
