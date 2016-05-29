@@ -4,22 +4,20 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request.Method;
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
@@ -43,23 +41,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class QuizActivity extends AppCompatActivity {
+public class QuizActivity extends ActionBarActivity {
+
     private static final String TAG = Profile.class.getSimpleName();
     private TextView quizQuestion;
-    private ImageView imageViews;
-    private TextView result;
     private RadioGroup radioGroup;
     private RadioButton optionOne;
     private RadioButton optionTwo;
     private RadioButton optionThree;
     private RadioButton optionFour;
+    private TextView result;
     private int currentQuizQuestion;
     private int quizCount;
-    private QuizWrapper firstQuestion;
-    private List<QuizWrapper> parsedObject;
-    public int correctAnswerForQuestion;
-    public int score;
-
     private int ScoreString;
     String Score = ScoreString + "";
 
@@ -67,7 +60,7 @@ public class QuizActivity extends AppCompatActivity {
     private SQLiteFunction func;
     private SQLiteHandler db;
 
-    private static String url = "http://192.168.137.68/droid/images/";
+    private static String url = "http://192.168.1.71/droid/images/";
     private static final String TAG_DAFTAR = "quiz_questions";
     private static final String TAG_ID = "id";
     private static final String TAG_SOAL = "question";
@@ -81,21 +74,26 @@ public class QuizActivity extends AppCompatActivity {
     public ImageLoader imageLoader;
     Toolbar toolbar;
 
+    private QuizWrapper firstQuestion;
+
+    private List<QuizWrapper> parsedObject;
+
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        quizQuestion = (TextView) findViewById(R.id.quiz_question);
-        imageViews = (ImageView) findViewById(R.id.imageSoal);
-        radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-        optionOne = (RadioButton) findViewById(R.id.radio0);
-        optionTwo = (RadioButton) findViewById(R.id.radio1);
-        optionThree = (RadioButton) findViewById(R.id.radio2);
-        optionFour = (RadioButton) findViewById(R.id.radio3);
-        imageLoader = new ImageLoader(getApplicationContext());
-        final ImageView previousButton = (ImageView) findViewById(R.id.previousquiz);
+        quizQuestion = (TextView)findViewById(R.id.quiz_question);
+        radioGroup = (RadioGroup)findViewById(R.id.radioGroup);
+        optionOne = (RadioButton)findViewById(R.id.radio0);
+        optionTwo = (RadioButton)findViewById(R.id.radio1);
+        optionThree = (RadioButton)findViewById(R.id.radio2);
+        optionFour = (RadioButton)findViewById(R.id.radio3);
+        ImageView previousButton = (ImageView) findViewById(R.id.previousquiz);
         ImageView nextButton = (ImageView) findViewById(R.id.nextquiz);
+        imageLoader = new ImageLoader(getApplicationContext());
         result = (TextView) findViewById(R.id.resultView);
 
         func = new SQLiteFunction(getApplicationContext());
@@ -106,242 +104,262 @@ public class QuizActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Ujian Dalam Jaringan");
 
         AsyncJsonObject asyncObject = new AsyncJsonObject();
+
         asyncObject.execute("");
+
         nextButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
+
             public void onClick(View v) {
-                result.setText(" ");
-                if (currentQuizQuestion >= quizCount) {
-                    AlertDialog tampilKotakAlert;
-                    tampilKotakAlert = new AlertDialog.Builder(QuizActivity.this)
-                            .create();
-                    tampilKotakAlert.setTitle("Hasil Ujian");
-                    tampilKotakAlert.setIcon(R.mipmap.ic_launcher);
-                    tampilKotakAlert.setMessage("Nilai : " + correctAnswerForQuestion * 10);
+
+                int radioSelected = radioGroup.getCheckedRadioButtonId();
+
+                int userSelection = getSelectedAnswer(radioSelected);
+
+                int correctAnswerForQuestion = firstQuestion.getCorrectAnswer();
+
+                if(userSelection == correctAnswerForQuestion){
+                // correct answer
                     ScoreString = correctAnswerForQuestion * 10;
+                    Toast.makeText(QuizActivity.this, "Jawaban Anda Benar", Toast.LENGTH_LONG).show();
 
-                    tampilKotakAlert.setButton(AlertDialog.BUTTON_NEGATIVE, "Keluar",
-                            new DialogInterface.OnClickListener() {
+                    currentQuizQuestion++;
 
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Intent q = new Intent(QuizActivity.this, Profile.class);
-                                    finish();
-                                    startActivity(q);
-                                }
-                            });
+                    if(currentQuizQuestion >= quizCount){
+                        AlertDialog tampilKotakAlert;
+                        tampilKotakAlert = new AlertDialog.Builder(QuizActivity.this)
+                                .create();
+                        tampilKotakAlert.setTitle("Hasil Ujian");
+                        tampilKotakAlert.setIcon(R.mipmap.ic_launcher);
+                        tampilKotakAlert.setMessage("Nilai : " + ScoreString);
+                        ScoreString = correctAnswerForQuestion * 10;
 
-                    tampilKotakAlert.setButton(AlertDialog.BUTTON_POSITIVE, "Submit",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    HashMap<String, String> user = db.getUserDetails();
+                        tampilKotakAlert.setButton(AlertDialog.BUTTON_NEGATIVE, "Keluar",
+                                new DialogInterface.OnClickListener() {
 
-                                    String name = user.get("name");
-                                    String Score = ScoreString +"";
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent q = new Intent(QuizActivity.this, Profile.class);
+                                        finish();
+                                        startActivity(q);
+                                    }
+                                });
 
-                                    InputNilai(name, Score);
-                                }
-                            });
+                        tampilKotakAlert.setButton(AlertDialog.BUTTON_POSITIVE, "Submit",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        HashMap<String, String> user = db.getUserDetails();
 
-                    tampilKotakAlert.show();
-                    return;
-                } else {
+                                        String name = user.get("name");
+                                        String Score = ScoreString +"";
 
-                    previousButton.setVisibility(Button.VISIBLE);
-                    optionOne.setTextColor(Color.BLACK);
-                    optionTwo.setTextColor(Color.BLACK);
-                    optionThree.setTextColor(Color.BLACK);
-                    optionFour.setTextColor(Color.BLACK);
+                                        InputNilai(name, Score);
+                                    }
+                                });
 
+                        tampilKotakAlert.show();
+                        Toast.makeText(QuizActivity.this, "End of the Quiz Questions", Toast.LENGTH_LONG).show();
 
-                    firstQuestion = parsedObject.get(currentQuizQuestion);
-                    quizQuestion.setText(firstQuestion.getQuestion());
-                    imageLoader.DisplayImage(url+firstQuestion.getImage(), imageViews);
-                    String pila = firstQuestion.getPila();
-                    String pilb = firstQuestion.getPilb();
-                    String pilc = firstQuestion.getPilc();
-                    String pild = firstQuestion.getPild();
-                    uncheckedRadioButton();
-                    optionOne.setText(pila);
-                    optionTwo.setText(pilb);
-                    optionThree.setText(pilc);
-                    optionFour.setText(pild);
-
-                    previousButton.setVisibility(Button.VISIBLE);
-                    int radioSelected = radioGroup.getCheckedRadioButtonId();
-                    int userSelection = getSelectedAnswer(radioSelected);
-                    correctAnswerForQuestion = firstQuestion.getCorrectAnswer();
-
-
-                    if (userSelection == correctAnswerForQuestion) {
-// correct answer
-                        if (correctAnswerForQuestion == 1) {
-                            optionOne.setTextColor(getResources().getColor(R.color.colorAccent));
-
-                        } else if (correctAnswerForQuestion == 2) {
-                            optionTwo.setTextColor(getResources().getColor(R.color.colorAccent));
-                        } else if (correctAnswerForQuestion == 3) {
-                            optionThree.setTextColor(getResources().getColor(R.color.colorAccent));
-                        } else if (correctAnswerForQuestion == 4) {
-                            optionFour.setTextColor(getResources().getColor(R.color.colorAccent));
-                        }
-                        currentQuizQuestion++;
-
-                    } else {
-// failed question
-                        result.setTextColor(Color.parseColor("#FF0000"));
-                        if (correctAnswerForQuestion == 1) {
-                            optionOne.setTextColor(getResources().getColor(R.color.colorPrimary));
-                        } else if (correctAnswerForQuestion == 2) {
-                            optionTwo.setTextColor(getResources().getColor(R.color.colorPrimary));
-                        } else if (correctAnswerForQuestion == 3) {
-                            optionThree.setTextColor(getResources().getColor(R.color.colorPrimary));
-                        } else if (correctAnswerForQuestion == 4) {
-                            optionFour.setTextColor(getResources().getColor(R.color.colorPrimary));
-                        }
-
-
-                        currentQuizQuestion++;
                         return;
+
+                    }
+
+                    else{
+
+                        firstQuestion = parsedObject.get(currentQuizQuestion);
+                        quizQuestion.setText(firstQuestion.getQuestion());
+                        uncheckedRadioButton();
+                        optionOne.setText(firstQuestion.getPila());
+                        optionTwo.setText(firstQuestion.getPilb());
+                        optionThree.setText(firstQuestion.getPilc());
+                        optionFour.setText(firstQuestion.getPild());
+
                     }
 
                 }
 
+                else{
+
+// failed question
+
+                    Toast.makeText(QuizActivity.this, "You chose the wrong answer", Toast.LENGTH_LONG).show();
+
+                    return;
+
+                }
+
             }
+
         });
 
         previousButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
+
             public void onClick(View v) {
 
-                previousButton.setVisibility(Button.INVISIBLE);
-                int radioSelected = radioGroup.getCheckedRadioButtonId();
-                int userSelection = getSelectedAnswer(radioSelected);
-                correctAnswerForQuestion = firstQuestion.getCorrectAnswer();
+                currentQuizQuestion--;
 
+                if(currentQuizQuestion < 0){
 
-                if (userSelection == correctAnswerForQuestion) {
-// correct answer
-                    if (correctAnswerForQuestion == 1) {
-                        optionOne.setTextColor(getResources().getColor(R.color.colorAccent));
-
-                    } else if (correctAnswerForQuestion == 2) {
-                        optionTwo.setTextColor(getResources().getColor(R.color.colorAccent));
-                    } else if (correctAnswerForQuestion == 3) {
-                        optionThree.setTextColor(getResources().getColor(R.color.colorAccent));
-                    } else if (correctAnswerForQuestion == 4) {
-                        optionFour.setTextColor(getResources().getColor(R.color.colorAccent));
-                    }
-
-                    currentQuizQuestion--;
-
-                } else {
-// failed question
-                    result.setTextColor(Color.parseColor("#FF0000"));
-                    if (correctAnswerForQuestion == 1) {
-                        optionOne.setTextColor(getResources().getColor(R.color.colorPrimary));
-                    } else if (correctAnswerForQuestion == 2) {
-                        optionTwo.setTextColor(getResources().getColor(R.color.colorPrimary));
-                    } else if (correctAnswerForQuestion == 3) {
-                        optionThree.setTextColor(getResources().getColor(R.color.colorPrimary));
-                    } else if (correctAnswerForQuestion == 4) {
-                        optionFour.setTextColor(getResources().getColor(R.color.colorPrimary));
-                    }
-
-                    currentQuizQuestion--;
                     return;
+
                 }
 
+                uncheckedRadioButton();
+
+                firstQuestion = parsedObject.get(currentQuizQuestion);
+                quizQuestion.setText(firstQuestion.getQuestion());
+                optionOne.setText(firstQuestion.getPila());
+                optionTwo.setText(firstQuestion.getPilb());
+                optionThree.setText(firstQuestion.getPilc());
+                optionFour.setText(firstQuestion.getPild());
+
             }
+
         });
+
     }
 
     private class AsyncJsonObject extends AsyncTask<String, Void, String> {
+
         private ProgressDialog progressDialog;
 
         @Override
+
         protected String doInBackground(String... params) {
+
             HttpClient httpClient = new DefaultHttpClient(new BasicHttpParams());
-            HttpPost httpPost = new HttpPost("http://192.168.137.68/droid/quiz.php");
+
+            HttpPost httpPost = new HttpPost("http://192.168.1.71/droid/quiz.php");
+
             String jsonResult = "";
+
             try {
+
                 HttpResponse response = httpClient.execute(httpPost);
+
                 jsonResult = inputStreamToString(response.getEntity().getContent()).toString();
+
                 System.out.println("Returned Json object " + jsonResult.toString());
+
             } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
+
+// TODO Auto-generated catch block
+
                 e.printStackTrace();
+
             } catch (IOException e) {
-            // TODO Auto-generated catch block
+
+// TODO Auto-generated catch block
+
                 e.printStackTrace();
+
             }
+
             return jsonResult;
+
         }
 
         @Override
+
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
+
+// TODO Auto-generated method stub
+
             super.onPreExecute();
-            progressDialog = ProgressDialog.show(QuizActivity.this, "Loading Quiz", "Please Wait....", true);
+
+            progressDialog = ProgressDialog.show(QuizActivity.this, "Loading Quiz","Wait....", true);
+
         }
 
         @Override
+
         protected void onPostExecute(String result) {
+
             super.onPostExecute(result);
+
             progressDialog.dismiss();
+
             System.out.println("Resulted Value: " + result);
+
             parsedObject = returnParsedJsonObject(result);
-            if (parsedObject == null) {
+
+            if(parsedObject == null){
+
                 return;
+
             }
+
             quizCount = parsedObject.size();
             firstQuestion = parsedObject.get(0);
             quizQuestion.setText(firstQuestion.getQuestion());
-            imageLoader.DisplayImage(url+firstQuestion.getImage(), imageViews);
-
-            String pila = firstQuestion.getPila();
-            String pilb = firstQuestion.getPilb();
-            String pilc = firstQuestion.getPilc();
-            String pild = firstQuestion.getPild();
-            uncheckedRadioButton();
-            optionOne.setText(pila);
-            optionTwo.setText(pilb);
-            optionThree.setText(pilc);
-            optionFour.setText(pild);
+            optionOne.setText(firstQuestion.getPila());
+            optionTwo.setText(firstQuestion.getPilb());
+            optionThree.setText(firstQuestion.getPilc());
+            optionFour.setText(firstQuestion.getPild());
 
         }
 
         private StringBuilder inputStreamToString(InputStream is) {
+
             String rLine = "";
+
             StringBuilder answer = new StringBuilder();
+
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
             try {
+
                 while ((rLine = br.readLine()) != null) {
+
                     answer.append(rLine);
+
                 }
+
             } catch (IOException e) {
+
 // TODO Auto-generated catch block
+
                 e.printStackTrace();
+
             }
+
             return answer;
+
         }
+
     }
 
-    private List<QuizWrapper> returnParsedJsonObject(String result) {
+    private List<QuizWrapper> returnParsedJsonObject(String result){
+
         List<QuizWrapper> jsonObject = new ArrayList<QuizWrapper>();
+
         JSONObject resultObject = null;
+
         JSONArray jsonArray = null;
+
         QuizWrapper newItemObject = null;
+
         try {
+
             resultObject = new JSONObject(result);
+
             System.out.println("Testing the water " + resultObject.toString());
+
             jsonArray = resultObject.optJSONArray("quiz_questions");
+
         } catch (JSONException e) {
+
             e.printStackTrace();
+
         }
-        assert jsonArray != null;
-        for (int i = 0; i < jsonArray.length(); i++) {
+
+        for(int i = 0; i < jsonArray.length(); i++){
+
             JSONObject jsonChildNode = null;
+
             try {
                 jsonChildNode = jsonArray.getJSONObject(i);
                 int id = jsonChildNode.getInt(TAG_ID);
@@ -356,42 +374,66 @@ public class QuizActivity extends AppCompatActivity {
                 newItemObject = new QuizWrapper(id, question, pila, pilb, pilc, pild, correctAnswer, image);
                 jsonObject.add(newItemObject);
             } catch (JSONException e) {
+
                 e.printStackTrace();
+
             }
+
         }
+
         return jsonObject;
+
     }
 
-    private int getSelectedAnswer(int radioSelected) {
+    private int getSelectedAnswer(int radioSelected){
+
         int answerSelected = 0;
-        if (radioSelected == R.id.radio0) {
+
+        if(radioSelected == R.id.radio0){
+
             answerSelected = 1;
+
         }
-        if (radioSelected == R.id.radio1) {
+
+        if(radioSelected == R.id.radio1){
+
             answerSelected = 2;
+
         }
-        if (radioSelected == R.id.radio2) {
+
+        if(radioSelected == R.id.radio2){
+
             answerSelected = 3;
+
         }
-        if (radioSelected == R.id.radio3) {
+
+        if(radioSelected == R.id.radio3){
+
             answerSelected = 4;
+
         }
+
         return answerSelected;
+
     }
 
-    private void uncheckedRadioButton() {
+    private void uncheckedRadioButton(){
+
         optionOne.setChecked(false);
+
         optionTwo.setChecked(false);
+
         optionThree.setChecked(false);
+
         optionFour.setChecked(false);
-        radioGroup.clearCheck();
+
     }
 
     private void InputNilai(final String name,final String Score) {
 
         String tag_string_req = "req_input";
 
-        StringRequest strReq = new StringRequest(Method.POST,
+        StringRequest strReq = new StringRequest(Request.Method.POST,
                 AppConfig.URL_HASIL, new Response.Listener<String>() {
 
             @Override
@@ -457,4 +499,5 @@ public class QuizActivity extends AppCompatActivity {
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
+
 }

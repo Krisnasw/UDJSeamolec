@@ -32,7 +32,7 @@ public class Mapel extends AppCompatActivity {
     ArrayList<HashMap<String, String>> oslist = new ArrayList<HashMap<String, String>>();
 
     //URL to get JSON Array
-    private static String url = "http://192.168.137.68/droid/mapel.php/";
+    private static String url = "http://192.168.1.71/droid/mapel.php/";
 
     //JSON Node Names
     private static final String TAG_OS = "hasil";
