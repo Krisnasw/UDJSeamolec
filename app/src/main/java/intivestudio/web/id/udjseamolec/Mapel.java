@@ -32,7 +32,7 @@ public class Mapel extends AppCompatActivity {
     ArrayList<HashMap<String, String>> oslist = new ArrayList<HashMap<String, String>>();
 
     //URL to get JSON Array
-    private static String url = "http://192.168.1.71/droid/mapel.php/";
+    private static String url = "http://192.168.1.75/droid/mapel.php/";
 
     //JSON Node Names
     private static final String TAG_OS = "hasil";
@@ -110,9 +110,16 @@ public class Mapel extends AppCompatActivity {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view,
                                                 int position, long id) {
-                            Toast.makeText(Mapel.this, "You Clicked at "+oslist.get(+position).get("napel"), Toast.LENGTH_SHORT).show();
-                            Intent q = new Intent(Mapel.this, QuizActivity.class);
-                            startActivity(q);
+
+                            if (position == 0) {
+                                Toast.makeText(Mapel.this, "Anda Memilih " + oslist.get(+position).get("napel"), Toast.LENGTH_SHORT).show();
+                                Intent q = new Intent(Mapel.this, QuizActivity.class);
+                                startActivity(q);
+                            } else if (position == 1) {
+                                Toast.makeText(Mapel.this, "Anda Memilih " + oslist.get(+position).get("napel"), Toast.LENGTH_SHORT).show();
+                                Intent q = new Intent(Mapel.this, Profile.class);
+                                startActivity(q);
+                            }
                         }
                     });
 
