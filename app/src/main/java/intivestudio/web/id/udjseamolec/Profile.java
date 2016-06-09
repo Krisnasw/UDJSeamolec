@@ -14,6 +14,7 @@ public class Profile extends AppCompatActivity {
 
     private TextView txtName;
     private TextView txtEmail;
+    private TextView txtPass;
     private ImageView btnLogout;
     private ImageView btnSoal;
     private ImageView btStatistik;
@@ -26,13 +27,14 @@ public class Profile extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.profile);
+        setContentView(R.layout.prof);
 
-        txtName = (TextView) findViewById(R.id.tv1);
-        txtEmail = (TextView) findViewById(R.id.tv2);
-        btnLogout = (ImageView) findViewById(R.id.btnLogout);
-        btnSoal = (ImageView) findViewById(R.id.btSoal);
-        btStatistik = (ImageView) findViewById(R.id.btStatistik);
+        txtName = (TextView) findViewById(R.id.namae);
+        txtEmail = (TextView) findViewById(R.id.emaile);
+        txtPass = (TextView) findViewById(R.id.passw0t);
+        btnLogout = (ImageView) findViewById(R.id.btLogoute);
+        btnSoal = (ImageView) findViewById(R.id.btSoale);
+        btStatistik = (ImageView) findViewById(R.id.btStats);
 
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
@@ -53,10 +55,12 @@ public class Profile extends AppCompatActivity {
 
         String name = user.get("name");
         String email = user.get("email");
+        String pass = user.get("password");
 
         // Displaying the user details on the screen
         txtName.setText("Nama Lengkap : " +name);
         txtEmail.setText("Email : " +email);
+        txtPass.setText("Password : " +pass);
 
         // Logout button click event
         btnLogout.setOnClickListener(new View.OnClickListener() {

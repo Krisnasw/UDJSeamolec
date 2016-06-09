@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +24,7 @@ import java.util.Map;
 
 public class Login extends AppCompatActivity {
     private static final String TAG = Register.class.getSimpleName();
-    private Button btnLogin;
+    private TextView btnLogin;
     private TextView btnLinkToRegister;
     private EditText inputEmail;
     private EditText inputPassword;
@@ -37,16 +36,16 @@ public class Login extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.signin);
 
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Login Validation");
 
-        inputEmail = (EditText) findViewById(R.id.unames);
-        inputPassword = (EditText) findViewById(R.id.passw);
-        btnLogin = (Button) findViewById(R.id.btnLogin);
-        btnLinkToRegister = (TextView) findViewById(R.id.link_to_register);
+        inputEmail = (EditText) findViewById(R.id.email);
+        inputPassword = (EditText) findViewById(R.id.pass);
+        btnLogin = (TextView) findViewById(R.id.signin);
+        btnLinkToRegister = (TextView) findViewById(R.id.Create);
 
         // Progress dialog
         pDialog = new ProgressDialog(this);

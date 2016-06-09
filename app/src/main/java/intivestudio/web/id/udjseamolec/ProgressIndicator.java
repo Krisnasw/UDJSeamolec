@@ -10,7 +10,6 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.github.paolorotolo.appintro.AppIntro;
-import intivestudio.web.id.udjseamolec.SampleSlide;
 
 public class ProgressIndicator extends AppIntro {
     @Override
@@ -25,7 +24,7 @@ public class ProgressIndicator extends AppIntro {
     }
 
     private void loadMainActivity(){
-        Intent intent = new Intent(this, Dashboard.class);
+        Intent intent = new Intent(this, Login.class);
         finish();
         startActivity(intent);
     }

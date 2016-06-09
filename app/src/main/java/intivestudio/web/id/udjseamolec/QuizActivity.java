@@ -62,7 +62,7 @@ public class QuizActivity extends ActionBarActivity {
     private SQLiteFunction func;
     private SQLiteHandler db;
 
-    private static String url = "http://192.168.1.75/droid/images/";
+    private static String url = "http://192.168.1.76/droid/images/";
     private static final String TAG_DAFTAR = "quiz_questions";
     private static final String TAG_ID = "id";
     private static final String TAG_SOAL = "question";
@@ -281,7 +281,7 @@ public class QuizActivity extends ActionBarActivity {
 
             HttpClient httpClient = new DefaultHttpClient(new BasicHttpParams());
 
-            HttpPost httpPost = new HttpPost("http://192.168.1.75/droid/quiz.php");
+            HttpPost httpPost = new HttpPost("http://192.168.1.76/droid/quiz.php");
 
             String jsonResult = "";
 

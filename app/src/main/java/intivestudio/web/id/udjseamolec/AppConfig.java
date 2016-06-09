@@ -5,15 +5,15 @@ package intivestudio.web.id.udjseamolec;
  */
 public class AppConfig {
     // Server user login url
-    public static String URL_LOGIN = "http://192.168.1.75/droid/login.php";
+    public static String URL_LOGIN = "http://192.168.1.76/droid/login.php";
 
     // Server user register url
-    public static String URL_REGISTER = "http://192.168.1.75/droid/register.php";
+    public static String URL_REGISTER = "http://192.168.1.76/droid/register.php";
 
     // Server user Input Nilai
-    public static String URL_HASIL = "http://192.168.1.75/droid/input.php";
+    public static String URL_HASIL = "http://192.168.1.76/droid/input.php";
 
     // Server user Statistik
-    public static String URL_NILAI = "http://192.168.1.75/droid/score.php";
+    public static String URL_NILAI = "http://192.168.1.76/droid/score.php";
 }
 

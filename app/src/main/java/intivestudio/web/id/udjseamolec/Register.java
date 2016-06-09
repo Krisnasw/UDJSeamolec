@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +24,7 @@ import java.util.Map;
 
 public class Register extends AppCompatActivity {
     private static final String TAG = Register.class.getSimpleName();
-    private Button btnRegister;
+    private TextView btnRegister;
     private TextView btnLinkToLogin;
     private EditText inputFullName;
     private EditText inputEmail;
@@ -40,14 +39,14 @@ public class Register extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.signup);
 
-        inputFullName = (EditText) findViewById(R.id.reg_fullname);
-        inputEmail = (EditText) findViewById(R.id.reg_uname);
-        inputPassword = (EditText) findViewById(R.id.reg_password);
-        inputKel = (EditText) findViewById(R.id.reg_kel);
-        btnRegister = (Button) findViewById(R.id.btnRegister);
-        btnLinkToLogin = (TextView) findViewById(R.id.link_to_login);
+        inputFullName = (EditText) findViewById(R.id.name);
+        inputEmail = (EditText) findViewById(R.id.email);
+        inputPassword = (EditText) findViewById(R.id.pass);
+        inputKel = (EditText) findViewById(R.id.sekolah);
+        btnRegister = (TextView) findViewById(R.id.conti);
+        btnLinkToLogin = (TextView) findViewById(R.id.terms);
 
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);

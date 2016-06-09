@@ -19,8 +19,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".ProgressIndicator"/>
-        <activity android:name=".Dashboard"/>
-        <activity android:name=".ContactUs"/>
         <activity android:name=".Login"/>
         <activity android:name=".Register"/>
         <activity android:name=".Profile"/>
